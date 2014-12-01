@@ -4,6 +4,7 @@ var clipboard_visible = false;
 var sticky_clipboard = false;
 var data;
 var first_click = true;
+var clone_count = 0;
 $(document).on( "keydown", function( event ) {
 	if(counting) {
 		return;
@@ -96,10 +97,19 @@ $(document).on('dragover', "#clipboard", function(evt) {
 $(document).on('drop', "#clipboard", function(evt) {
 	evt.preventDefault();
 	var data = evt.originalEvent.dataTransfer.getData("text");
+	var clone = $("#" + data).clone();
+	clone_count++;
+	clone.attr('id', 'clone-' + clone_count);
+	if($("#" + data).parent().hasClass('location-holder')) {
+		$("#" + data).parent().addClass('empty-location');
+	}
 	$(".empty-slot").text('');
 	$(".empty-slot")[0].appendChild(document.getElementById(data));
+	$(".empty-location").append(clone);
+	$(".empty-location").removeClass('empty-location');
 	$(".empty-slot").addClass('occupied-slot');
 	$(".empty-slot").removeClass('empty-slot');
+	$("#" + data).addClass("in-clipboard");
 	addEmptySlot();
 });
 
