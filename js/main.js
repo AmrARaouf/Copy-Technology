@@ -136,3 +136,8 @@ $(document).on('click', '.folder', function(){
 		first_click = true;
 	}, 500);
 });
+
+
+$(document).on('click', '.close-window', function(){
+	$(".open-folder").hide();
+});

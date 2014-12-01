@@ -139,3 +139,14 @@ body {
 	height: 50px;
 	margin-right: 15px;
 }
+
+.close-window {
+	width: 15px;
+	height: 15px;
+	background: transparent;
+	position: absolute;
+	z-index: 1;
+	top: 4px;
+	left: 4px;
+	cursor: pointer;
+}
