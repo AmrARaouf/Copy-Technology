@@ -79,21 +79,37 @@ function addEmptySlot() {
 	$("#clipboard").append(empty_slot);
 }
 
+function addFolderEmptySlot() {
+	var folderEmptySlot = '<div class="location-holder folder-empty-slot"></div>'
+	$(".draggable-area-folder").append(folderEmptySlot);
+}
+
 $(document).on('dragstart', ".drop-item", function(evt) {
    evt.originalEvent.dataTransfer.setData("text", evt.target.id);
 });
 
-$(document).on('dragover', ".drop-location", function(evt) {
+$(document).on('dragover', "#clipboard", function(evt) {
    evt.preventDefault();
 });
 
-$(document).on('drop', ".drop-location", function(evt) {
+$(document).on('drop', "#clipboard", function(evt) {
 	evt.preventDefault();
 	var data = evt.originalEvent.dataTransfer.getData("text");
-	$(this).text('');
-	$(this).removeClass('empty-slot');
-	$(this).removeClass('drop-location');
-	$(this).addClass('occupied-slot');
-	evt.target.appendChild(document.getElementById(data));
+	$(".empty-slot").text('');
+	$(".empty-slot")[0].appendChild(document.getElementById(data));
+	$(".empty-slot").addClass('occupied-slot');
+	$(".empty-slot").removeClass('empty-slot');
 	addEmptySlot();
+});
+
+$(document).on('dragover', ".draggable-area-folder", function(evt) {
+   evt.preventDefault();
+});
+
+$(document).on('drop', ".draggable-area-folder", function(evt) {
+	evt.preventDefault();
+	var data = evt.originalEvent.dataTransfer.getData("text");
+	$(".folder-empty-slot")[0].appendChild(document.getElementById(data));
+	$(".folder-empty-slot").removeClass('folder-empty-slot');
+	addFolderEmptySlot();
 });

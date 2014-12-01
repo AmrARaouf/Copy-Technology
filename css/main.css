@@ -49,6 +49,22 @@ body {
 	background-repeat: no-repeat;
 }
 
+.file {
+	width: 100%;
+	height: 100%;
+	background: url(../images/file.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.pdf {
+	width: 100%;
+	height: 100%;
+	background: url(../images/pdf.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
 .folder-stack {
 	background-image: url(../images/folder_stack.png) !important;
 	background-size: contain;
@@ -81,6 +97,44 @@ body {
 }
 
 .location-holder {
-	width: 100px;
-	height: 100px;
+	width: 70px;
+	height: 70px;
+}
+
+.open-folder {
+	width: 700px;
+	height: 500px;
+	position: absolute;
+	background: #FFF;
+	top: 20px;
+	left: 270px;
+	position: relative;
+}
+
+.open-folder .window-top {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.open-folder .window-left {
+	height: 438px;
+	left: 0;
+	top: 57px;
+	position: absolute;
+}
+
+.draggable-area-folder {
+	width: 497px;
+	position: absolute;
+	right: 0;
+	height: 440px;
+	top: 57px;
+}
+
+.draggable-area-folder .location-holder {
+	float: left;
+	width: 50px;
+	height: 50px;
 }
