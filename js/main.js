@@ -3,6 +3,7 @@ var counting = false;
 var clipboard_visible = false;
 var sticky_clipboard = false;
 var data;
+var first_click = true;
 $(document).on( "keydown", function( event ) {
 	if(counting) {
 		return;
@@ -75,7 +76,7 @@ function hideClipboard(){
 }
 
 function addEmptySlot() {
-	var empty_slot = '<div class="empty-slot drop-location"><i class="fa fa-plus-circle"></i>Copy</div>'
+	var empty_slot = '<div class="empty-slot drop-location"></div>'
 	$("#clipboard").append(empty_slot);
 }
 
@@ -112,4 +113,16 @@ $(document).on('drop', ".draggable-area-folder", function(evt) {
 	$(".folder-empty-slot")[0].appendChild(document.getElementById(data));
 	$(".folder-empty-slot").removeClass('folder-empty-slot');
 	addFolderEmptySlot();
+});
+
+
+$(document).on('click', '.folder', function(){
+	if(!first_click) {
+		first_click = true;
+		$(".open-folder").show();
+	}
+	first_click = false;
+	setTimeout(function () {
+		first_click = true;
+	}, 500);
 });
