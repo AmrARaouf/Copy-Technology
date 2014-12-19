@@ -56,15 +56,32 @@ $(document).ready(function(){
 	});
 
 	$("#clipboard").hover(function(){
-		//Hover In cde
+		//Hover In code
 	}, function(){
 		//Hover out code
 		if(!sticky_clipboard) {
 			hideClipboard();
 		}
 	});
+	$(".drop-item").mouseenter(function(evt) {
+		var id = evt.target.id;
+		var hcount = $("#" + id).attr("hcount");
+		hcount++;
+		$("#" + id).attr("hcount", hcount);
+		if (hcount == 3) {
+			copyToClipboard(id);
+			// should show clipboard here but doesn't
+			showClipboard();
+			//setTimeout(hideClipboard(), 500);
+			console.log("showClipboard");
+		}
+		setTimeout(function() {
+			hcount = $("#" + id).attr("hcount");
+			hcount--;
+			$("#" + id).attr("hcount", hcount);
+		}, 1500);
+	});
 });
-
 
 function showClipboard(){
 	clipboard_visible = false;
@@ -97,21 +114,25 @@ $(document).on('dragover', "#clipboard", function(evt) {
 $(document).on('drop', "#clipboard", function(evt) {
 	evt.preventDefault();
 	var data = evt.originalEvent.dataTransfer.getData("text");
-	var clone = $("#" + data).clone();
+	copyToClipboard(data);
+});
+
+function copyToClipboard(id) {
+	var clone = $("#" + id).clone();
 	clone_count++;
 	clone.attr('id', 'clone-' + clone_count);
-	if($("#" + data).parent().hasClass('location-holder')) {
-		$("#" + data).parent().addClass('empty-location');
+	if($("#" + id).parent().hasClass('location-holder')) {
+		$("#" + id).parent().addClass('empty-location');
 	}
 	$(".empty-slot").text('');
-	$(".empty-slot")[0].appendChild(document.getElementById(data));
+	$(".empty-slot")[0].appendChild(document.getElementById(id));
 	$(".empty-location").append(clone);
 	$(".empty-location").removeClass('empty-location');
 	$(".empty-slot").addClass('occupied-slot');
 	$(".empty-slot").removeClass('empty-slot');
-	$("#" + data).addClass("in-clipboard");
+	$("#" + id).addClass("in-clipboard");
 	addEmptySlot();
-});
+}
 
 $(document).on('dragover', ".draggable-area-folder", function(evt) {
    evt.preventDefault();
