@@ -7,6 +7,7 @@ var first_click = true;
 var clone_count = 0;
 var clipboard_fully_visible = false;
 var currentMousePos = { x: -1, y: -1 };
+var small_clipboard_open = false;
 $(document).mousemove(function(event) {
     currentMousePos.x = event.pageX;
     currentMousePos.y = event.pageY;
@@ -28,6 +29,15 @@ $(document).on( "keyup", function( event ) {
   	clearTimeout(clipboard_timer);
   }
 });
+
+$(document).on( "keyup", function( event ) {
+  if(event.which == 88) {
+  	if(small_clipboard_open) {
+  		resetPopUp();
+  	}
+  }
+});
+
 
 
 function beginTimer() {
@@ -211,6 +221,7 @@ $(document).on('click', '.close-window', function(){
 });
 
 function popUpClipboard() {
+	small_clipboard_open = true;
 	$(".popUpClipboard").css('top', currentMousePos.y - 35 + "px");
 	$(".popUpClipboard").css('left', currentMousePos.x  + 35 +  "px");
 	$(".popUpClipboard").show();
@@ -243,6 +254,7 @@ function exitRight() {
 }
 
 function resetPopUp() {
+	small_clipboard_open = false;
 	var newPopUp = "<div class='popUpClipboard'></div>"
 	$(".popUpClipboard").remove();
 	$("body").append(newPopUp);
