@@ -168,6 +168,7 @@ $(document).on('drop', ".draggable-area-folder", function(evt) {
 	$(".folder-empty-slot")[0].appendChild(document.getElementById(data));
 	$(".folder-empty-slot").removeClass('folder-empty-slot');
 	addFolderEmptySlot();
+	$("#" + data).removeClass("in-clipboard");
 });
 
 
