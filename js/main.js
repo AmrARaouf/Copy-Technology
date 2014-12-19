@@ -91,7 +91,7 @@ $(document).ready(function(){
 		var hcount = $("#" + id).attr("hcount");
 		hcount++;
 		$("#" + id).attr("hcount", hcount);
-		if (hcount == 3) {
+		if (hcount == 2) {
 			copyToClipboard(id);
 			// should show clipboard here but doesn't
 			sticky_clipboard = true;
