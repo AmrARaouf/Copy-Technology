@@ -8,6 +8,15 @@ body {
 	padding-left: 20px;
 	background: url(../images/ubuntu-bg.jpg);
 	background-size: cover;
+	overflow: hidden;
+}
+
+.transition-1s {
+	transition: 1s ease-in-out;
+	-webkit-transition: 1s ease-in-out;
+	-moz-transition: 1s ease-in-out;
+	-o-transition: 1s ease-in-out;
+	-ms-transition: 1s ease-in-out;
 }
 
 .clipboard-hide {
@@ -149,4 +158,23 @@ body {
 	top: 4px;
 	left: 4px;
 	cursor: pointer;
+}
+
+.popUpClipboard {
+	position: absolute;
+	width: 150px;
+	height: 200px;
+	background-color: rgba(12, 58, 92, 0.6);
+	top: 0;
+	left: 0;
+	display: none;
+	box-shadow: -5px 5px 23px -11px rgba(255, 255, 255, 1);
+}
+
+.popUpClipboard > div {
+	text-align: center;
+	margin: 15px auto;
+	background-size: contain;
+	height: 50px;
+	width: 50px;
 }
