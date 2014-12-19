@@ -71,8 +71,9 @@ $(document).ready(function(){
 		if (hcount == 3) {
 			copyToClipboard(id);
 			// should show clipboard here but doesn't
+			sticky_clipboard = true;
 			showClipboard();
-			//setTimeout(hideClipboard(), 500);
+			setTimeout(function(){hideClipboard()}, 1000);
 			console.log("showClipboard");
 		}
 		setTimeout(function() {
