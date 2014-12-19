@@ -100,7 +100,9 @@ function addFolderEmptySlot() {
 }
 
 $(document).on('dragstart', ".drop-item", function(evt) {
-	popUpClipboard();
+	if(!$(this).hasClass('in-clipboard')) {
+		popUpClipboard();
+	}
 	evt.originalEvent.dataTransfer.setData("text", evt.target.id);
 });
 
