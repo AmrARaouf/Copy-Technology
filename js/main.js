@@ -8,6 +8,7 @@ var clone_count = 0;
 var clipboard_fully_visible = false;
 var currentMousePos = { x: -1, y: -1 };
 var small_clipboard_open = false;
+var in_popup = false;
 $(document).mousemove(function(event) {
     currentMousePos.x = event.pageX;
     currentMousePos.y = event.pageY;
@@ -124,7 +125,13 @@ $(document).on('dragover', ".popUpClipboard", function(evt) {
    evt.preventDefault();
 });
 
+$(document).on('dragend', "body", function(evt) {
+	if(small_clipboard_open && !in_popup) {
+  		resetPopUp();
+  	}
+});
 $(document).on('drop', ".popUpClipboard", function(evt) {
+	in_popup = true;
 	evt.preventDefault();
 	var data = evt.originalEvent.dataTransfer.getData("text");
 	var clone = $("#" + data).clone();
@@ -236,4 +243,5 @@ function resetPopUp() {
 	var newPopUp = "<div class='popUpClipboard'></div>"
 	$(".popUpClipboard").remove();
 	$("body").append(newPopUp);
+	in_popup = false;
 }
