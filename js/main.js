@@ -9,9 +9,22 @@ var clipboard_fully_visible = false;
 var currentMousePos = { x: -1, y: -1 };
 var small_clipboard_open = false;
 var in_popup = false;
+var mouse_down = false;
+var clear_to_catch = true;
+var point_queue = [];
+var guesture_track_time = 50;
 $(document).mousemove(function(event) {
     currentMousePos.x = event.pageX;
     currentMousePos.y = event.pageY;
+});
+
+$(document).mousedown(function(){
+	mouse_down = true;
+	// console.log("mouse down");
+});
+$(document).mouseup(function(){
+	mouse_down = false;
+	// console.log("mouse up");
 });
 $(document).on( "keydown", function( event ) {
 	if(counting) {
@@ -80,15 +93,33 @@ $(document).ready(function(){
 	});
 
 	$("#clipboard").hover(function(){
-		//Hover In cde
+		//Hover In code
 	}, function(){
 		//Hover out code
 		if(!sticky_clipboard) {
 			hideClipboard();
 		}
 	});
+	$(".drop-item").mouseenter(function(evt) {
+		var id = evt.target.id;
+		var hcount = $("#" + id).attr("hcount");
+		hcount++;
+		$("#" + id).attr("hcount", hcount);
+		if (hcount == 2) {
+			copyToClipboard(id);
+			// should show clipboard here but doesn't
+			sticky_clipboard = true;
+			showClipboard();
+			setTimeout(function(){hideClipboard()}, 1000);
+			console.log("showClipboard");
+		}
+		setTimeout(function() {
+			hcount = $("#" + id).attr("hcount");
+			hcount--;
+			$("#" + id).attr("hcount", hcount);
+		}, 1500);
+	});
 });
-
 
 function showClipboard(){
 	clipboard_visible = false;
@@ -159,21 +190,25 @@ $(document).on('drop', ".popUpClipboard", function(evt) {
 $(document).on('drop', "#clipboard", function(evt) {
 	evt.preventDefault();
 	var data = evt.originalEvent.dataTransfer.getData("text");
-	var clone = $("#" + data).clone();
+	copyToClipboard(data);
+});
+
+function copyToClipboard(id) {
+	var clone = $("#" + id).clone();
 	clone_count++;
 	clone.attr('id', 'clone-' + clone_count);
-	if($("#" + data).parent().hasClass('location-holder')) {
-		$("#" + data).parent().addClass('empty-location');
+	if($("#" + id).parent().hasClass('location-holder')) {
+		$("#" + id).parent().addClass('empty-location');
 	}
 	$(".empty-slot").text('');
-	$(".empty-slot")[0].appendChild(document.getElementById(data));
+	$(".empty-slot")[0].appendChild(document.getElementById(id));
 	$(".empty-location").append(clone);
 	$(".empty-location").removeClass('empty-location');
 	$(".empty-slot").addClass('occupied-slot');
 	$(".empty-slot").removeClass('empty-slot');
-	$("#" + data).addClass("in-clipboard");
+	$("#" + id).addClass("in-clipboard");
 	addEmptySlot();
-});
+}
 
 $(document).on('dragover', ".draggable-area-folder", function(evt) {
    evt.preventDefault();
@@ -238,10 +273,35 @@ function exitRight() {
 	}, 100);
 }
 
+$(document).on("mousedown", ".draggable-area-folder", function(){
+	point_queue = [];
+});
+
+$(document).on("mouseup", ".draggable-area-folder", function(){
+	drawGesture();
+});
+$(document).on("mousemove", ".draggable-area-folder", function(e){
+	if(mouse_down && clear_to_catch) {
+		clear_to_catch = false;
+		console.log(currentMousePos.x + ", " + currentMousePos.y);
+		point_queue.push({x: currentMousePos.x, y: currentMousePos.y});
+		setTimeout(function(){
+			clear_to_catch = true;
+		}, guesture_track_time);
+	}
+});
 function resetPopUp() {
 	small_clipboard_open = false;
 	var newPopUp = "<div class='popUpClipboard'></div>"
 	$(".popUpClipboard").remove();
 	$("body").append(newPopUp);
 	in_popup = false;
+}
+
+function drawGesture() {
+	$(".drawing-marker").remove();
+	for(var i = 0; i < point_queue.length; i++) {
+		var to_be_drawn = "<div class='drawing-marker' style='top: " + point_queue[i].y + "px; left: " + point_queue[i].x + "px;'>"+  i + "</div>"
+		$("body").prepend(to_be_drawn);
+	}
 }
