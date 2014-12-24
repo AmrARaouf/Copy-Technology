@@ -13,6 +13,18 @@ var mouse_down = false;
 var clear_to_catch = true;
 var point_queue = [];
 var guesture_track_time = 50;
+var x_axis = {i:1, j:0};
+var circle_radius_base = 70;
+var circle = false;
+
+$(document).on("click", ".page-dimmer", function(){closeCircle();});
+
+
+$(document).on("click", ".in-circle", function(){
+	pasteCircleItem($(this).attr('id'));
+});
+
+
 $(document).mousemove(function(event) {
     currentMousePos.x = event.pageX;
     currentMousePos.y = event.pageY;
@@ -63,7 +75,6 @@ function beginTimer() {
 }
 
 function toggleClipboard() {
-	console.log('toggled')
 	if(clipboard_visible) {
 		sticky_clipboard = false;
 		$("#clipboard").css('right', "-100%");
@@ -81,6 +92,8 @@ function toggleClipboard() {
 		}, 700);
 	}
 }
+
+
 
 $(document).ready(function(){
 	$('.clipboard-hover').hover(function(){
@@ -106,12 +119,12 @@ $(document).ready(function(){
 		hcount++;
 		$("#" + id).attr("hcount", hcount);
 		if (hcount == 2) {
+			$("#" + id).attr("hcount", 0);
 			copyToClipboard(id);
 			// should show clipboard here but doesn't
 			sticky_clipboard = true;
 			showClipboard();
 			setTimeout(function(){hideClipboard()}, 1000);
-			console.log("showClipboard");
 		}
 		setTimeout(function() {
 			hcount = $("#" + id).attr("hcount");
@@ -277,13 +290,17 @@ $(document).on("mousedown", ".draggable-area-folder", function(){
 	point_queue = [];
 });
 
-$(document).on("mouseup", ".draggable-area-folder", function(){
-	drawGesture();
+$(document).on("mouseup", ".draggable-area-folder", function(e){
+	//drawGesture();
+	if (detectGesture()) {
+		console.log("gesture detected at " + e.pageX + ", " + e.pageY);
+		createPasteCircle(e.pageX - 30, e.pageY - 25);
+	}
 });
 $(document).on("mousemove", ".draggable-area-folder", function(e){
 	if(mouse_down && clear_to_catch) {
 		clear_to_catch = false;
-		console.log(currentMousePos.x + ", " + currentMousePos.y);
+		//console.log(currentMousePos.x + ", " + currentMousePos.y);
 		point_queue.push({x: currentMousePos.x, y: currentMousePos.y});
 		setTimeout(function(){
 			clear_to_catch = true;
@@ -304,4 +321,93 @@ function drawGesture() {
 		var to_be_drawn = "<div class='drawing-marker' style='top: " + point_queue[i].y + "px; left: " + point_queue[i].x + "px;'>"+  i + "</div>"
 		$("body").prepend(to_be_drawn);
 	}
+}
+
+function detectGesture() {
+	vectors = makeVectors();
+	for (var i = 0; i < vectors.length; i++) {
+		if (angle(vectors[i], x_axis) != NaN && angle(vectors[i], x_axis) >= 160) {
+			for (var j = i; j < vectors.length; j++) {
+				if (angle(vectors[i], vectors[j]) != NaN && angle(vectors[i], vectors[j]) >= 70 && angle(vectors[i], vectors[j]) <= 110) {
+					return true;
+				}
+			};
+		}
+	};
+	return false;
+}
+
+function makeVectors() {
+	vectors = [];
+	for (var i = 1; i < point_queue.length; i++) {
+		var ii = point_queue[i].x - point_queue[i-1].x;
+		var jj = point_queue[i].y - point_queue[i-1].y;
+		vectors.push({i: ii, j: jj});
+	};
+	return vectors;
+}
+
+function angle(vector1, vector2) {
+	var dotProduct = (vector1.i * vector2.i) + (vector1.j * vector2.j);
+	var magnitude1 = Math.sqrt((vector1.i*vector1.i)+(vector1.j*vector1.j));
+	var magnitude2 = Math.sqrt((vector2.i*vector2.i)+(vector2.j*vector2.j));
+	if (magnitude1 == 0 && magnitude2 == 0) {
+		return 0;
+	}
+	return Math.acos(dotProduct/(magnitude1*magnitude2)) * (180/Math.PI);
+}
+
+function createPasteCircle(x,y) {
+	dimPage();
+	console.log("creating paste circle");
+	$(".in-circle").remove();
+	var elements = $(".in-clipboard").toArray();
+	var angle = 0;
+	var angleOffset = 360/elements.length;
+	var circle_radius = circle_radius_base + elements.length*5;
+	for (var i = elements.length - 1; i >= 0; i--) {
+		var id = elements[i].id + "-circle";
+		var newElement = "<div id="+id+"></div>";
+		$("body").prepend(newElement);
+		$("#" + id).addClass(elements[i].classList[0]);
+		$("#" + id).addClass(elements[i].classList[1]);
+		$("#" + id).addClass('in-circle');
+		$("#" + id).removeClass('drop-item');
+		var thisY = y - circle_radius*Math.cos(angle*(Math.PI/180));
+		var thisX = x + circle_radius*Math.sin(angle*(Math.PI/180));
+		$("#" + id).css({'top':y+'px', 'left':x+'px'});
+		$("#" + id).animate({top:thisY, left: thisX}, 300);
+		angle += angleOffset;
+	};
+	circle = true;
+	/*$(document).on("mousedown", function(evt) {
+		if (evt.which == 3 && circle) {
+			evt.preventDefault();
+			$(".in-circle").remove();
+			circle = false;
+		}
+	});*/
+}
+
+function pasteCircleItem(itemId) {
+	$(".folder-empty-slot")[0].appendChild(document.getElementById(itemId));
+	$(".folder-empty-slot").removeClass('folder-empty-slot');
+	addFolderEmptySlot();
+	$(".draggable-area-folder .in-circle").removeClass("in-circle");
+	$(".in-circle").remove();
+	undimPage();
+}
+
+function dimPage() {
+	$("body").append("<div class='page-dimmer transition-05s'></div>");
+	setTimeout(function(){$(".page-dimmer").css("opacity", 1);}, 10);
+}
+
+function undimPage() {
+	$(".page-dimmer").remove();
+}
+
+function closeCircle() {
+	undimPage();
+	$(".in-circle").remove();
 }

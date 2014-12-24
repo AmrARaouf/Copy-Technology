@@ -6,7 +6,7 @@ body, html {
 
 body {
 	padding-left: 20px;
-	background: url(../images/ubuntu-bg.jpg);
+	background: url(../images/wallpaper.png);
 	background-size: cover;
 	overflow: hidden;
 }
@@ -17,6 +17,14 @@ body {
 	-moz-transition: 1s ease-in-out;
 	-o-transition: 1s ease-in-out;
 	-ms-transition: 1s ease-in-out;
+}
+
+.transition-05s {
+	transition: 0.5s ease-in-out;
+	-webkit-transition: 0.5s ease-in-out;
+	-moz-transition: 0.5s ease-in-out;
+	-o-transition: 0.5s ease-in-out;
+	-ms-transition: 0.5s ease-in-out;
 }
 
 .clipboard-hide {
@@ -185,4 +193,31 @@ body {
 	position: absolute;
 	background-color: red;
 	z-index: 123123;
+}
+
+.in-circle {
+	z-index: 11;
+	width: 70px;
+	position: absolute;
+}
+
+.file.in-circle, .folder.in-circle, .pdf.in-circle {
+	height: 70px !important;
+}
+
+.location-holder .file, .location-holder .folder, .location-holder .pdf {
+	width: 100%;
+	height: 100%;
+	position: static;
+} 
+
+.page-dimmer {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 10;
+	top: 0;
+	left: 0;
+	opacity: 0;
 }
