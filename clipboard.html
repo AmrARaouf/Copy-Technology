@@ -8,6 +8,17 @@
 <body>
 <div class='popUpClipboard'></div>
 <div class="clipboard-hover"></div>
+<div class="desktop-drop-area"></div>
+<div class="context-menu">
+	<ul>
+		<li class="arrange-desktop">
+			Arrange Desktop
+		</li>
+		<li class="paste-option">
+			paste
+		</li>
+	</ul>
+</div>
 <div class="clipboard-hide">
 	<div id="clipboard" class="clipboard">
 		<div class="empty-slot">
@@ -15,45 +26,34 @@
 	</div>
 </div>
 
-<div class="col">
-	<div class="location-holder">
-		<div class="drop-item folder" id="folder1" draggable="true" hcount="0"></div>
-	</div>
-	
-	<div class="location-holder">
-		<div class="drop-item pdf" id="pdf1" draggable="true" hcount="0"></div>
-	</div>
-	<div class="location-holder">
-		<div class="drop-item pdf" id="pdf2" draggable="true" hcount="0"></div>
-	</div>
-	<div class="location-holder">
-		<div class="drop-item pdf" id="pdf3" draggable="true" hcount="0"></div>
-	</div>
+<div class="location-holder">
+	<div class="drop-item folder" id="folder1" draggable="true" hcount="0"></div>
 </div>
 
-
-
-<div class="col">
-	<div class="location-holder">
-		<div class="drop-item file" id="file1" draggable="true" hcount="0"></div>
-	</div>
-	<div class="location-holder">
-		<div class="drop-item file" id="file2" draggable="true" hcount="0"></div>
-	</div>
+<div class="location-holder">
+	<div class="drop-item pdf" id="pdf1" draggable="true" hcount="0"></div>
+</div>
+<div class="location-holder">
+	<div class="drop-item pdf" id="pdf2" draggable="true" hcount="0"></div>
+</div>
+<div class="location-holder">
+	<div class="drop-item pdf" id="pdf3" draggable="true" hcount="0"></div>
 </div>
 
-
-
-<div class="col">
-	
+<div class="location-holder">
+	<div class="drop-item file" id="file1" draggable="true" hcount="0"></div>
 </div>
+<div class="location-holder">
+	<div class="drop-item file" id="file2" draggable="true" hcount="0"></div>
+</div>
+
 
 <div class="open-folder">
 	<div class="close-window"></div>
-	<img class="window-top" src="images/window_top.png">
+	<img class="window-top" draggable="true" src="images/window_top.png">
 	<img class="window-left" src="images/window_left.png">
 	<div class="draggable-area-folder">
-		<div class="location-holder folder-empty-slot">
+		<div class="location-holder-folder folder-empty-slot">
 			
 		</div>
 	</div>

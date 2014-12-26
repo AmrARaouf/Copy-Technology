@@ -17,20 +17,32 @@ var x_axis = {i:1, j:0};
 var circle_radius_base = 70;
 var circle = false;
 var skip_first_element;
+var dragging_folder = false;
+var start_drag_x = 0;
+var start_drag_y = 0;
 
 $(document).on("click", ".page-dimmer", function(){closeCircle();});
 
 
-$(document).on("click", ".in-circle", function(){
-	pasteCircleItem($(this).attr('id'));
-});
+document.addEventListener("dragover", function(e){
+    e = e || window.event;
+    var dragX = e.pageX, dragY = e.pageY;
+    currentMousePos.x = dragX;
+    currentMousePos.y = dragY;
+    if(mouse_down && small_clipboard_open && dragX > ($(".popUpClipboard").offset().left + 150)) {
+    	resetPopUp();
+    }
+    if(dragging_folder) {
+    	$(".open-folder").css('left', dragX - start_drag_x);
+    	$(".open-folder").css('top', dragY);
+    }
+}, false);
 
 
 $(document).mousemove(function(event) {
     currentMousePos.x = event.pageX;
     currentMousePos.y = event.pageY;
 });
-
 $(document).mousedown(function(){
 	mouse_down = true;
 	// console.log("mouse down");
@@ -95,8 +107,18 @@ function toggleClipboard() {
 }
 
 
+$(document).on('click', '.arrange-desktop', function(){
+	arrangeDesktop();
+	$(".context-menu").hide();
+});
+
+$(document).on('click', '.paste-option', function(e){
+	createPasteCircle(e.pageX - 30, e.pageY - 25);
+	$(".context-menu").hide();
+});
 
 $(document).ready(function(){
+	arrangeDesktop();
 	$('.clipboard-hover').hover(function(){
 		$(this).hide();
 		showClipboard();
@@ -151,7 +173,7 @@ function addEmptySlot() {
 }
 
 function addFolderEmptySlot() {
-	var folderEmptySlot = '<div class="location-holder folder-empty-slot"></div>'
+	var folderEmptySlot = '<div class="location-holder-folder folder-empty-slot"></div>'
 	$(".draggable-area-folder").append(folderEmptySlot);
 }
 
@@ -161,6 +183,18 @@ $(document).on('dragstart', ".drop-item", function(evt) {
 	}
 	evt.originalEvent.dataTransfer.setData("text", evt.target.id);
 });
+
+$(document).on('dragstart', ".window-top", function(evt) {
+	evt.originalEvent.dataTransfer.setData("text", evt.target.id);
+	dragging_folder = true;
+	start_drag_x = currentMousePos.x - 270;
+});
+
+$(document).on('dragend', ".window-top", function(evt) {
+	evt.originalEvent.dataTransfer.setData("text", evt.target.id);
+	dragging_folder = false;
+});
+
 
 $(document).on('dragover', "#clipboard", function(evt) {
    evt.preventDefault();
@@ -175,6 +209,35 @@ $(document).on('dragend', "body", function(evt) {
   		resetPopUp();
   	}
 });
+
+
+$(document).on('dragover', ".desktop-drop-area", function(evt) {
+   evt.preventDefault();
+});
+
+$(".desktop-drop-area").on('mousedown', function(e) { 
+   if( (e.which == 1) ) {
+     // left button
+     $(".context-menu").hide();
+   }if( (e.which == 3) ) {
+     // right button
+     displayContextMenuAt(currentMousePos.x, currentMousePos.y);
+   }else if( (e.which == 2) ) {
+      // middle button
+   }
+   e.preventDefault();
+}).on('contextmenu', function(e){
+ e.preventDefault();
+});
+
+$(document).on('drop', ".desktop-drop-area", function(evt){
+	evt.preventDefault();
+	var data = evt.originalEvent.dataTransfer.getData("text");
+	$("#" + data).parent().css('position', 'absolute');
+	$("#" + data).parent().css('top', currentMousePos.y - 30 + "px");
+	$("#" + data).parent().css('left', currentMousePos.x - 50 + "px");
+});
+
 $(document).on('drop', ".popUpClipboard", function(evt) {
 	in_popup = true;
 	evt.preventDefault();
@@ -417,4 +480,30 @@ function undimPage() {
 function closeCircle() {
 	undimPage();
 	$(".in-circle").remove();
+}
+
+function arrangeDesktop() {
+	var onTop = 20;
+	var elements = $(".location-holder");
+	$(elements).css('top', 0);
+	$(elements).css('left', 0);
+	offsetX = 0;
+	offsetY = 0;
+	elements.each(function( i ) {
+	$(elements[i]).css('top', offsetY * 90 + onTop + "px");
+	$(elements[i]).css('left', offsetX * 90 + "px");
+	onTop = 0;
+	if( i % 3 == 0 && i!= 0) {
+		offsetX++;
+	 	offsetY = -1;
+	 	onTop = 20;
+	}
+	offsetY++;
+	});
+}
+
+function displayContextMenuAt(x, y) {
+	$(".context-menu").show();
+	$(".context-menu").css('left', x + 5+ 'px');
+	$(".context-menu").css('top', y + 5 + 'px');
 }
