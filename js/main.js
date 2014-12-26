@@ -16,6 +16,7 @@ var guesture_track_time = 50;
 var x_axis = {i:1, j:0};
 var circle_radius_base = 70;
 var circle = false;
+var skip_first_element;
 
 $(document).on("click", ".page-dimmer", function(){closeCircle();});
 
@@ -380,13 +381,19 @@ function createPasteCircle(x,y) {
 		angle += angleOffset;
 	};
 	circle = true;
-	/*$(document).on("mousedown", function(evt) {
-		if (evt.which == 3 && circle) {
-			evt.preventDefault();
-			$(".in-circle").remove();
+	skip_first_element = true;
+	setTimeout(function() {
+		$(".in-circle").mouseleave(function(evt) {
+			var id = evt.target.id;
+			skip_first_element = false;
+			if (circle) {
+				pasteCircleItem(id);
+				$(".in-circle").remove();
+			}
 			circle = false;
-		}
-	});*/
+		});
+	}, 300);
+		
 }
 
 function pasteCircleItem(itemId) {

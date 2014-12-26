@@ -196,9 +196,11 @@ body {
 }
 
 .in-circle {
-	z-index: 11;
+	z-index: 123123;
 	width: 70px;
+	height: 70px;
 	position: absolute;
+	right: 20px;
 }
 
 .file.in-circle, .folder.in-circle, .pdf.in-circle {
